@@ -15,11 +15,11 @@ driver.implicitly_wait(20)
 english = driver.find_element(By.XPATH,"//*[@id='langSelect-EN']")
 english.click()
 
-driver.implicitly_wait(30)
+
 
 timeout = time.time() + 5
 
-
+driver.implicitly_wait(10)
 ok = True
 while ok:
 
@@ -43,7 +43,7 @@ while ok:
 
         to_buy = purchases.find_elements(By.CLASS_NAME, "product")
 
-        for i in to_buy:
+        for i in to_buy[::-1]:
             price = i.find_element(By.CLASS_NAME, "price").text
             if price == "":
                 continue
@@ -53,21 +53,20 @@ while ok:
                 print(price)
 
             except ValueError:
-                prices = price.split(",")
-                print(prices)
-                price = "".join(i for i in prices)
-                print(price)
-                price = float(price)
-                print(type(price))
+                if 'm' in list(price):
+                    price = price.split()[0] * 1000000
+                    price = float(price)
+                else:
+                    prices = price.split(",")
+                    print(prices)
+                    price = "".join(i for i in prices)
+                    print(price)
+                    price = float(price)
+                    print(type(price))
 
-            prices1.append(int(price))
-            prices1 = prices1[::-1]
+            if cookies >= price:
+                i.click()
 
-
-        for i in prices1:
-            if cookies >= i:
-                index_of = prices1.index(i)
-                to_buy[i].click()
 
 
         # print(possible_buys)
